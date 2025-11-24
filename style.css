@@ -207,3 +207,36 @@ h1 {
     background: #bbada0;
     color: white;
 }
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .mobile-controls {
+        display: flex;
+    }
+    
+    .tile {
+        font-size: 1.5em;
+    }
+    
+    .tile-128,
+    .tile-256,
+    .tile-512 {
+        font-size: 1.3em;
+    }
+    
+    .tile-1024,
+    .tile-2048 {
+        font-size: 1.1em;
+    }
+}
