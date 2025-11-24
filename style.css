@@ -35,3 +35,22 @@ h1 {
     color: #776e65;
 }
 
+.score-container {
+    background: #bbada0;
+    padding: 15px 25px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.score-label {
+    color: #eee4da;
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+
+.score-value {
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
