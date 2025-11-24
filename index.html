@@ -43,6 +43,24 @@
                 <button id="restartBtn" class="btn">Restart</button>
             </div>
         </div>
+
+        <div id="leaderboardModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Leaderboard</h2>
+                <table id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody"></tbody>
+                </table>
+                <button id="closeLeaderboardBtn" class="btn">Close</button>
+            </div>
+        </div>
     </div>
     <script src="game.js"></script>
 </body>
