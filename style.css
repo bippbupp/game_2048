@@ -97,3 +97,14 @@ h1 {
     aspect-ratio: 1;
     position: relative;
 }
+
+.tile {
+    position: absolute;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    font-weight: bold;
+    transition: all 0.15s ease-in-out;
+}
