@@ -32,6 +32,17 @@
                 <button class="direction-btn" data-direction="right">→</button>
             </div>
         </div>
+        
+        <div id="gameOverModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Game Over!</h2>
+                <p>Your score: <span id="finalScore">0</span></p>
+                <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+                <button id="saveScoreBtn" class="btn">Save Score</button>
+                <p id="saveConfirmation" class="hidden">Your record has been saved!</p>
+                <button id="restartBtn" class="btn">Restart</button>
+            </div>
+        </div>
     </div>
     <script src="game.js"></script>
 </body>
