@@ -120,3 +120,32 @@ h1 {
 .tile-512 { background: #edc850; color: #f9f6f2; font-size: 1.8em; }
 .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 1.5em; }
 .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: 1.5em; }
+
+.mobile-controls {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.horizontal-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.direction-btn {
+    width: 60px;
+    height: 60px;
+    background: #8f7a66;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.direction-btn:hover {
+    background: #9f8a76;
+}
