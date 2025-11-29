@@ -228,7 +228,11 @@ setupEventListeners() {
     document.getElementById('newGameBtn').addEventListener('click', () => {
     this.resetGame();
     this.hideModal('gameOverModal');
-});
+    });
+
+    document.getElementById('undoBtn').addEventListener('click', () => {
+    this.undo();
+    });
 
 }
 
@@ -259,6 +263,15 @@ setupTouchControls() {
             this.move(dy > 0 ? 'down' : 'up');
         }
     });
+}
+
+undo() {
+    if (this.history.length > 0 && !this.gameOver) {
+        const prevState = this.history.pop();
+        this.board = prevState.board;
+        this.score = prevState.score;
+        this.updateDisplay();
+    }
 }
 
 }
