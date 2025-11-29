@@ -224,6 +224,12 @@ setupEventListeners() {
     });
 
     this.setupTouchControls();
+
+    document.getElementById('newGameBtn').addEventListener('click', () => {
+    this.resetGame();
+    this.hideModal('gameOverModal');
+});
+
 }
 
 setupTouchControls() {
