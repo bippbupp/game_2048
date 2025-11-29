@@ -296,6 +296,14 @@ class Game2048 {
         return true;
     }
 
+    showModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    hideModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
 }
 
 const game = new Game2048();
