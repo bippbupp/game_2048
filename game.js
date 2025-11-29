@@ -141,6 +141,22 @@ moveUp() {
     }
     return moved;
 }
+
+moveDown() {
+    let moved = false;
+    for (let col = 0; col < this.size; col++) {
+        const column = this.board.map(row => row[col]);
+        const reversed = [...column].reverse();
+        const newColumn = this.mergeLine(reversed).reverse();
+        if (JSON.stringify(newColumn) !== JSON.stringify(column)) {
+            moved = true;
+            for (let row = 0; row < this.size; row++) {
+                this.board[row][col] = newColumn[row];
+            }
+        }
+    }
+    return moved;
+}
 }
 
 const game = new Game2048();
