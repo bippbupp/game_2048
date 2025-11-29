@@ -8,6 +8,7 @@ class Game2048 {
 
         this.init();
         this.setupEventListeners();
+        this.loadGameState();
     }
 
     init() {
@@ -397,6 +398,19 @@ class Game2048 {
             history: this.history
         };
         localStorage.setItem('gameState', JSON.stringify(state));
+    }
+    }
+
+    loadGameState() {
+    if (typeof Storage !== 'undefined') {
+        const data = localStorage.getItem('gameState');
+        if (data) {
+            const state = JSON.parse(data);
+            this.board = state.board;
+            this.score = state.score;
+            this.history = state.history || [];
+            this.updateDisplay();
+        }
     }
     }
 
