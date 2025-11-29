@@ -102,6 +102,17 @@ mergeLine(line) {
     return newLine;
 }
 
+moveLeft() {
+    let moved = false;
+    for (let row = 0; row < this.size; row++) {
+        const newRow = this.mergeLine(this.board[row]);
+        if (JSON.stringify(newRow) !== JSON.stringify(this.board[row])) {
+            moved = true;
+            this.board[row] = newRow;
+        }
+    }
+    return moved;
+}
 }
 
 const game = new Game2048();
