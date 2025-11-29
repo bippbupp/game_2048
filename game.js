@@ -35,6 +35,7 @@ class Game2048 {
         }
         
         this.updateDisplay();
+        this.saveGameState();
     }
 
     addRandomTile() {
@@ -190,6 +191,7 @@ class Game2048 {
             }
             
             this.updateDisplay();
+            this.saveGameState();
             
             if (this.isGameOver()) {
                 this.gameOver = true;
@@ -288,6 +290,7 @@ class Game2048 {
             this.board = prevState.board;
             this.score = prevState.score;
             this.updateDisplay();
+            this.saveGameState();
         }
     }
 
@@ -357,33 +360,44 @@ class Game2048 {
     }
 
     showLeaderboard() {
-    const leaderboard = this.getLeaderboard();
-    const tbody = document.getElementById('leaderboardBody');
-    tbody.innerHTML = '';
-    
-    leaderboard.forEach((entry, index) => {
-        const row = document.createElement('tr');
+        const leaderboard = this.getLeaderboard();
+        const tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = '';
         
-        const placeCell = document.createElement('td');
-        placeCell.textContent = index + 1;
-        row.appendChild(placeCell);
+        leaderboard.forEach((entry, index) => {
+            const row = document.createElement('tr');
+            
+            const placeCell = document.createElement('td');
+            placeCell.textContent = index + 1;
+            row.appendChild(placeCell);
+            
+            const nameCell = document.createElement('td');
+            nameCell.textContent = entry.name;
+            row.appendChild(nameCell);
+            
+            const scoreCell = document.createElement('td');
+            scoreCell.textContent = entry.score;
+            row.appendChild(scoreCell);
+            
+            const dateCell = document.createElement('td');
+            dateCell.textContent = entry.date;
+            row.appendChild(dateCell);
+            
+            tbody.appendChild(row);
+        });
         
-        const nameCell = document.createElement('td');
-        nameCell.textContent = entry.name;
-        row.appendChild(nameCell);
-        
-        const scoreCell = document.createElement('td');
-        scoreCell.textContent = entry.score;
-        row.appendChild(scoreCell);
-        
-        const dateCell = document.createElement('td');
-        dateCell.textContent = entry.date;
-        row.appendChild(dateCell);
-        
-        tbody.appendChild(row);
-    });
-    
-    this.showModal('leaderboardModal');
+        this.showModal('leaderboardModal');
+    }
+
+    saveGameState() {
+    if (typeof Storage !== 'undefined') {
+        const state = {
+            board: this.board,
+            score: this.score,
+            history: this.history
+        };
+        localStorage.setItem('gameState', JSON.stringify(state));
+    }
     }
 
     showModal(modalId) {
