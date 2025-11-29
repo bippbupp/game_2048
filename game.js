@@ -51,6 +51,39 @@ addRandomTile() {
         this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
     }
 }
+
+updateDisplay() {
+    const gameBoard = document.getElementById('gameBoard');
+    const cells = gameBoard.querySelectorAll('.cell');
+    
+    document.querySelectorAll('.tile').forEach(tile => tile.remove());
+    
+    for (let row = 0; row < this.size; row++) {
+        for (let col = 0; col < this.size; col++) {
+            const value = this.board[row][col];
+            if (value !== 0) {
+                const tile = document.createElement('div');
+                tile.classList.add('tile', `tile-${value}`);
+                tile.textContent = value;
+                
+                const cellIndex = row * this.size + col;
+                const cell = cells[cellIndex];
+                const rect = cell.getBoundingClientRect();
+                const boardRect = gameBoard.getBoundingClientRect();
+                
+                tile.style.width = cell.offsetWidth + 'px';
+                tile.style.height = cell.offsetHeight + 'px';
+                tile.style.left = (rect.left - boardRect.left) + 'px';
+                tile.style.top = (rect.top - boardRect.top) + 'px';
+                
+                gameBoard.appendChild(tile);
+            }
+        }
+    }
+    
+    document.getElementById('score').textContent = this.score;
+}
+
 }
 
 const game = new Game2048();
