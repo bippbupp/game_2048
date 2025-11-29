@@ -113,6 +113,20 @@ moveLeft() {
     }
     return moved;
 }
+
+moveRight() {
+    let moved = false;
+    for (let row = 0; row < this.size; row++) {
+        const reversed = [...this.board[row]].reverse();
+        const newRow = this.mergeLine(reversed).reverse();
+        if (JSON.stringify(newRow) !== JSON.stringify(this.board[row])) {
+            moved = true;
+            this.board[row] = newRow;
+        }
+    }
+    return moved;
+}
+
 }
 
 const game = new Game2048();
