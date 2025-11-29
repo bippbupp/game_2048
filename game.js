@@ -296,6 +296,15 @@ class Game2048 {
         return true;
     }
 
+    showGameOver() {
+    document.getElementById('finalScore').textContent = this.score;
+    document.getElementById('playerName').value = '';
+    document.getElementById('saveConfirmation').classList.add('hidden');
+    document.getElementById('playerName').classList.remove('hidden');
+    document.getElementById('saveScoreBtn').classList.remove('hidden');
+    this.showModal('gameOverModal');
+    }
+    
     showModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
     }
