@@ -243,6 +243,14 @@ class Game2048 {
         this.saveScore();
         });
 
+        document.getElementById('leaderboardBtn').addEventListener('click', () => {
+        this.showLeaderboard();
+        });
+
+        document.getElementById('closeLeaderboardBtn').addEventListener('click', () => {
+        this.hideModal('leaderboardModal');
+        });
+
     }
 
     setupTouchControls() {
@@ -346,6 +354,36 @@ class Game2048 {
         return data ? JSON.parse(data) : [];
     }
     return [];
+    }
+
+    showLeaderboard() {
+    const leaderboard = this.getLeaderboard();
+    const tbody = document.getElementById('leaderboardBody');
+    tbody.innerHTML = '';
+    
+    leaderboard.forEach((entry, index) => {
+        const row = document.createElement('tr');
+        
+        const placeCell = document.createElement('td');
+        placeCell.textContent = index + 1;
+        row.appendChild(placeCell);
+        
+        const nameCell = document.createElement('td');
+        nameCell.textContent = entry.name;
+        row.appendChild(nameCell);
+        
+        const scoreCell = document.createElement('td');
+        scoreCell.textContent = entry.score;
+        row.appendChild(scoreCell);
+        
+        const dateCell = document.createElement('td');
+        dateCell.textContent = entry.date;
+        row.appendChild(dateCell);
+        
+        tbody.appendChild(row);
+    });
+    
+    this.showModal('leaderboardModal');
     }
 
     showModal(modalId) {
