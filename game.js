@@ -214,7 +214,17 @@ setupEventListeners() {
             this.move(keyMap[e.key]);
         }
     });
+
+    document.querySelectorAll('.direction-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (!this.gameOver) {
+                this.move(btn.dataset.direction);
+            }
+        });
+    });
 }
+
+
 }
 
 const game = new Game2048();
