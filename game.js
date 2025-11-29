@@ -274,6 +274,28 @@ undo() {
     }
 }
 
+isGameOver() {
+    for (let row = 0; row < this.size; row++) {
+        for (let col = 0; col < this.size; col++) {
+            if (this.board[row][col] === 0) return false;
+        }
+    }
+    
+    for (let row = 0; row < this.size; row++) {
+        for (let col = 0; col < this.size; col++) {
+            const value = this.board[row][col];
+            if (
+                (col < this.size - 1 && value === this.board[row][col + 1]) ||
+                (row < this.size - 1 && value === this.board[row + 1][col])
+            ) {
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
 }
 
 const game = new Game2048();
