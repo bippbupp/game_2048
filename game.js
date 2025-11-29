@@ -21,6 +21,20 @@ class Game2048 {
     
     this.resetGame();
 }
+
+resetGame() {
+    this.board = Array(this.size).fill(null).map(() => Array(this.size).fill(0));
+    this.score = 0;
+    this.gameOver = false;
+    this.history = [];
+    
+    const startTiles = Math.floor(Math.random() * 3) + 1;
+    for (let i = 0; i < startTiles; i++) {
+        this.addRandomTile();
+    }
+    
+    this.updateDisplay();
+}
 }
 
 const game = new Game2048();
