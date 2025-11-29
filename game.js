@@ -84,6 +84,24 @@ updateDisplay() {
     document.getElementById('score').textContent = this.score;
 }
 
+mergeLine(line) {
+    let newLine = line.filter(val => val !== 0);
+    
+    for (let i = 0; i < newLine.length - 1; i++) {
+        if (newLine[i] === newLine[i + 1]) {
+            newLine[i] *= 2;
+            this.score += newLine[i];
+            newLine.splice(i + 1, 1);
+        }
+    }
+    
+    while (newLine.length < this.size) {
+        newLine.push(0);
+    }
+    
+    return newLine;
+}
+
 }
 
 const game = new Game2048();
