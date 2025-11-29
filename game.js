@@ -157,6 +157,46 @@ moveDown() {
     }
     return moved;
 }
+
+move(direction) {
+    const prevBoard = JSON.parse(JSON.stringify(this.board));
+    const prevScore = this.score;
+    let moved = false;
+    
+    if (direction === 'left') {
+        moved = this.moveLeft();
+    } else if (direction === 'right') {
+        moved = this.moveRight();
+    } else if (direction === 'up') {
+        moved = this.moveUp();
+    } else if (direction === 'down') {
+        moved = this.moveDown();
+    }
+    
+    if (moved) {
+        this.history.push({
+            board: prevBoard,
+            score: prevScore
+        });
+        
+        if (this.history.length > 10) {
+            this.history.shift();
+        }
+        
+        const tilesToAdd = Math.random() < 0.5 ? 1 : 2;
+        for (let i = 0; i < tilesToAdd; i++) {
+            this.addRandomTile();
+        }
+        
+        this.updateDisplay();
+        
+        if (this.isGameOver()) {
+            this.gameOver = true;
+            this.showGameOver();
+        }
+    }
+}
+
 }
 
 const game = new Game2048();
