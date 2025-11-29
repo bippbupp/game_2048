@@ -234,6 +234,11 @@ class Game2048 {
         this.undo();
         });
 
+        document.getElementById('restartBtn').addEventListener('click', () => {
+        this.resetGame();
+        this.hideModal('gameOverModal');
+        });
+
     }
 
     setupTouchControls() {
@@ -304,7 +309,7 @@ class Game2048 {
     document.getElementById('saveScoreBtn').classList.remove('hidden');
     this.showModal('gameOverModal');
     }
-    
+
     showModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
     }
