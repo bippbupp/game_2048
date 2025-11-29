@@ -239,6 +239,10 @@ class Game2048 {
         this.hideModal('gameOverModal');
         });
 
+        document.getElementById('saveScoreBtn').addEventListener('click', () => {
+        this.saveScore();
+        });
+
     }
 
     setupTouchControls() {
@@ -308,6 +312,32 @@ class Game2048 {
     document.getElementById('playerName').classList.remove('hidden');
     document.getElementById('saveScoreBtn').classList.remove('hidden');
     this.showModal('gameOverModal');
+    }
+
+    saveScore() {
+    const playerName = document.getElementById('playerName').value.trim();
+    if (!playerName) {
+        alert('Please enter your name');
+        return;
+    }
+    
+    const leaderboard = this.getLeaderboard();
+    leaderboard.push({
+        name: playerName,
+        score: this.score,
+        date: new Date().toLocaleDateString('en-US')
+    });
+    
+    leaderboard.sort((a, b) => b.score - a.score);
+    const top10 = leaderboard.slice(0, 10);
+    
+    if (typeof Storage !== 'undefined') {
+        localStorage.setItem('leaderboard', JSON.stringify(top10));
+    }
+    
+    document.getElementById('playerName').classList.add('hidden');
+    document.getElementById('saveScoreBtn').classList.add('hidden');
+    document.getElementById('saveConfirmation').classList.remove('hidden');
     }
 
     getLeaderboard() {
