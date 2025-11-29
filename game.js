@@ -310,6 +310,14 @@ class Game2048 {
     this.showModal('gameOverModal');
     }
 
+    getLeaderboard() {
+    if (typeof Storage !== 'undefined') {
+        const data = localStorage.getItem('leaderboard');
+        return data ? JSON.parse(data) : [];
+    }
+    return [];
+    }
+
     showModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
     }
