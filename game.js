@@ -7,6 +7,7 @@ class Game2048 {
         this.history = [];
 
         this.init();
+        this.setupEventListeners();
     }
 
     init() {
@@ -197,6 +198,23 @@ move(direction) {
     }
 }
 
+setupEventListeners() {
+    document.addEventListener('keydown', (e) => {
+        if (this.gameOver) return;
+        
+        const keyMap = {
+            'ArrowUp': 'up',
+            'ArrowDown': 'down',
+            'ArrowLeft': 'left',
+            'ArrowRight': 'right'
+        };
+        
+        if (keyMap[e.key]) {
+            e.preventDefault();
+            this.move(keyMap[e.key]);
+        }
+    });
+}
 }
 
 const game = new Game2048();
