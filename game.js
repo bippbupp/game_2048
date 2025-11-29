@@ -222,8 +222,38 @@ setupEventListeners() {
             }
         });
     });
+
+    this.setupTouchControls();
 }
 
+setupTouchControls() {
+    const gameBoard = document.getElementById('gameBoard');
+    let touchStartX = 0;
+    let touchStartY = 0;
+    
+    gameBoard.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    });
+    
+    gameBoard.addEventListener('touchend', (e) => {
+        if (this.gameOver) return;
+        
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        
+        const dx = touchEndX - touchStartX;
+        const dy = touchEndY - touchStartY;
+        
+        const threshold = 50;
+        
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > threshold) {
+            this.move(dx > 0 ? 'right' : 'left');
+        } else if (Math.abs(dy) > threshold) {
+            this.move(dy > 0 ? 'down' : 'up');
+        }
+    });
+}
 
 }
 
