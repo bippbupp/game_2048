@@ -35,6 +35,22 @@ resetGame() {
     
     this.updateDisplay();
 }
+
+addRandomTile() {
+    const emptyCells = [];
+    for (let row = 0; row < this.size; row++) {
+        for (let col = 0; col < this.size; col++) {
+            if (this.board[row][col] === 0) {
+                emptyCells.push({ row, col });
+            }
+        }
+    }
+    
+    if (emptyCells.length > 0) {
+        const { row, col } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+    }
+}
 }
 
 const game = new Game2048();
