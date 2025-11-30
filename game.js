@@ -59,33 +59,66 @@ class Game2048 {
         const gameBoard = document.getElementById('gameBoard');
         const cells = gameBoard.querySelectorAll('.cell');
         
-        document.querySelectorAll('.tile').forEach(tile => tile.remove());
+        const existingTiles = new Map();
+        document.querySelectorAll('.tile').forEach(tile => {
+            const value = parseInt(tile.textContent);
+            const key = tile.dataset.id;
+            if (key) {
+                existingTiles.set(key, tile);
+            }
+        });
         
         for (let row = 0; row < this.size; row++) {
             for (let col = 0; col < this.size; col++) {
                 const value = this.board[row][col];
+                const tileId = `${row}-${col}`;
+                
                 if (value !== 0) {
-                    const tile = document.createElement('div');
-                    tile.classList.add('tile', `tile-${value}`);
-                    tile.textContent = value;
-                    
                     const cellIndex = row * this.size + col;
                     const cell = cells[cellIndex];
                     const rect = cell.getBoundingClientRect();
                     const boardRect = gameBoard.getBoundingClientRect();
                     
-                    tile.style.width = cell.offsetWidth + 'px';
-                    tile.style.height = cell.offsetHeight + 'px';
-                    tile.style.left = (rect.left - boardRect.left) + 'px';
-                    tile.style.top = (rect.top - boardRect.top) + 'px';
+                    const left = rect.left - boardRect.left;
+                    const top = rect.top - boardRect.top;
                     
-                    gameBoard.appendChild(tile);
+                    let tile = existingTiles.get(tileId);
+                    
+                    if (!tile || parseInt(tile.textContent) !== value) {
+                        if (tile) tile.remove();
+                        
+                        tile = document.createElement('div');
+                        tile.classList.add('tile', `tile-${value}`);
+                        tile.textContent = value;
+                        tile.dataset.id = tileId;
+                        tile.style.width = cell.offsetWidth + 'px';
+                        tile.style.height = cell.offsetHeight + 'px';
+                        tile.style.left = left + 'px';
+                        tile.style.top = top + 'px';
+                        
+                        gameBoard.appendChild(tile);
+                        
+                        setTimeout(() => {
+                            tile.style.transform = 'scale(1)';
+                        }, 10);
+                    } else {
+                        tile.style.left = left + 'px';
+                        tile.style.top = top + 'px';
+                        existingTiles.delete(tileId);
+                    }
                 }
             }
         }
         
+        existingTiles.forEach(tile => {
+            tile.style.opacity = '0';
+            tile.style.transform = 'scale(0)';
+            setTimeout(() => tile.remove(), 150);
+        });
+        
         document.getElementById('score').textContent = this.score;
     }
+
 
     mergeLine(line) {
         let newLine = line.filter(val => val !== 0);
