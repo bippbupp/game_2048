@@ -256,3 +256,23 @@ h1 {
         font-size: 1.1em;
     }
 }
+
+@keyframes merge-pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.tile.merged {
+    animation: merge-pop 0.2s ease-in-out;
+}
+
+.modal:not(.hidden) ~ .container .mobile-controls {
+    display: none !important;
+}

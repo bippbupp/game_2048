@@ -373,13 +373,9 @@ class Game2048 {
         leaderboard.sort((a, b) => b.score - a.score);
         const top10 = leaderboard.slice(0, 10);
         
-        // try {
-            if (typeof Storage !== 'undefined') {
-                localStorage.setItem('leaderboard', JSON.stringify(top10));
-            }
-        // } catch (e) {
-        //     console.error('Error saving leaderboard:', e);
-        // }
+        if (typeof Storage !== 'undefined') {
+            localStorage.setItem('leaderboard', JSON.stringify(top10));
+        }
         
         document.getElementById('playerName').classList.add('hidden');
         document.getElementById('saveScoreBtn').classList.add('hidden');
@@ -387,14 +383,10 @@ class Game2048 {
     }
     
     getLeaderboard() {
-        // try {
-            if (typeof Storage !== 'undefined') {
-                const data = localStorage.getItem('leaderboard');
-                return data ? JSON.parse(data) : [];
-            }
-        // } catch (e) {
-        //     console.error('Error loading leaderboard:', e);
-        // }
+        if (typeof Storage !== 'undefined') {
+            const data = localStorage.getItem('leaderboard');
+            return data ? JSON.parse(data) : [];
+        }
         return [];
     }
     
@@ -429,55 +421,59 @@ class Game2048 {
     }
     
     saveGameState() {
-        // try {
-            if (typeof Storage !== 'undefined') {
-                const state = {
-                    board: this.board,
-                    score: this.score,
-                    history: this.history
-                };
-                localStorage.setItem('gameState', JSON.stringify(state));
-                // console.log('Game saved successfully');
-            }
-        // } catch (e) {
-        //     console.error('Error saving game state:', e);
-        // }
+        if (typeof Storage !== 'undefined') {
+            const state = {
+                board: this.board,
+                score: this.score,
+                history: this.history
+            };
+            localStorage.setItem('gameState', JSON.stringify(state));
+        }
     }
     
     loadGameState() {
-        // try {
-            if (typeof Storage !== 'undefined') {
-                const data = localStorage.getItem('gameState');
-                // console.log('Loading game state:', data ? 'found' : 'not found');
+        if (typeof Storage !== 'undefined') {
+            const data = localStorage.getItem('gameState');
+            
+            if (data) {
+                const state = JSON.parse(data);
                 
-                if (data) {
-                    const state = JSON.parse(data);
-                    
-                    if (state.board && Array.isArray(state.board) && 
-                        typeof state.score === 'number') {
-                        this.board = state.board;
-                        this.score = state.score;
-                        this.history = state.history || [];
-                        this.updateDisplay();
-                        // console.log('Game loaded successfully');
-                        return;
-                    }
+                if (state.board && Array.isArray(state.board) && 
+                    typeof state.score === 'number') {
+                    this.board = state.board;
+                    this.score = state.score;
+                    this.history = state.history || [];
+                    this.updateDisplay();
+                    return;
                 }
             }
-        // } catch (e) {
-        //     console.error('Error loading game state:', e);
-        // }
+        }
         
-        // console.log('Starting new game');
         this.resetGame();
     }
     
     showModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        
+        const mobileControls = document.getElementById('mobileControls');
+        if (mobileControls) {
+            mobileControls.style.display = 'none';
+        }
     }
     
     hideModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
+        
+        const openModals = document.querySelectorAll('.modal:not(.hidden)');
+        if (openModals.length === 0) {
+            document.body.classList.remove('modal-open');
+            
+            const mobileControls = document.getElementById('mobileControls');
+            if (mobileControls && window.innerWidth <= 768) {
+                mobileControls.style.display = 'flex';
+            }
+        }
     }
 }
 
