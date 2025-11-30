@@ -262,12 +262,35 @@ h1 {
         transform: scale(1);
     }
     50% {
-        transform: scale(1.1);
+        transform: scale(1.15);
     }
     100% {
         transform: scale(1);
     }
 }
+
+.tile.merged {
+    animation: merge-pop 0.3s ease-out;
+}
+
+@keyframes spawn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.tile.new {
+    animation: spawn 0.2s ease-out;
+}
+
 
 .tile.merged {
     animation: merge-pop 0.2s ease-in-out;

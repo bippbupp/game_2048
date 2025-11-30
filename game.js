@@ -50,21 +50,23 @@ class Game2048 {
         if (emptyCells.length > 0) {
             const { row, col } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
             this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+            this.newTilePosition = { row, col };
         }
     }
-    
+
     updateDisplay() {
         const gameBoard = document.getElementById('gameBoard');
         const cells = gameBoard.querySelectorAll('.cell');
         
         const existingTiles = new Map();
         document.querySelectorAll('.tile').forEach(tile => {
-            const value = parseInt(tile.textContent);
             const key = tile.dataset.id;
             if (key) {
                 existingTiles.set(key, tile);
             }
         });
+        
+        const mergedPositions = new Set();
         
         for (let row = 0; row < this.size; row++) {
             for (let col = 0; col < this.size; col++) {
@@ -83,7 +85,10 @@ class Game2048 {
                     let tile = existingTiles.get(tileId);
                     
                     if (!tile || parseInt(tile.textContent) !== value) {
-                        if (tile) tile.remove();
+                        if (tile) {
+                            tile.remove();
+                            mergedPositions.add(tileId);
+                        }
                         
                         tile = document.createElement('div');
                         tile.classList.add('tile', `tile-${value}`);
@@ -99,6 +104,13 @@ class Game2048 {
                         setTimeout(() => {
                             tile.style.transform = 'scale(1)';
                             tile.style.opacity = '1';
+                            
+                            if (mergedPositions.has(tileId)) {
+                                tile.classList.add('merged');
+                                setTimeout(() => {
+                                    tile.classList.remove('merged');
+                                }, 300);
+                            }
                         }, 10);
                     } else {
                         tile.style.left = left + 'px';
@@ -117,14 +129,17 @@ class Game2048 {
         
         document.getElementById('score').textContent = this.score;
     }
+
     
     mergeLine(line) {
         let newLine = line.filter(val => val !== 0);
+        let merged = [];
         
         for (let i = 0; i < newLine.length - 1; i++) {
             if (newLine[i] === newLine[i + 1]) {
                 newLine[i] *= 2;
                 this.score += newLine[i];
+                merged.push(i);
                 newLine.splice(i + 1, 1);
             }
         }
