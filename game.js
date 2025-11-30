@@ -373,13 +373,13 @@ class Game2048 {
         leaderboard.sort((a, b) => b.score - a.score);
         const top10 = leaderboard.slice(0, 10);
         
-        try {
+        // try {
             if (typeof Storage !== 'undefined') {
                 localStorage.setItem('leaderboard', JSON.stringify(top10));
             }
-        } catch (e) {
-            console.error('Error saving leaderboard:', e);
-        }
+        // } catch (e) {
+        //     console.error('Error saving leaderboard:', e);
+        // }
         
         document.getElementById('playerName').classList.add('hidden');
         document.getElementById('saveScoreBtn').classList.add('hidden');
@@ -387,14 +387,14 @@ class Game2048 {
     }
     
     getLeaderboard() {
-        try {
+        // try {
             if (typeof Storage !== 'undefined') {
                 const data = localStorage.getItem('leaderboard');
                 return data ? JSON.parse(data) : [];
             }
-        } catch (e) {
-            console.error('Error loading leaderboard:', e);
-        }
+        // } catch (e) {
+        //     console.error('Error loading leaderboard:', e);
+        // }
         return [];
     }
     
@@ -429,7 +429,7 @@ class Game2048 {
     }
     
     saveGameState() {
-        try {
+        // try {
             if (typeof Storage !== 'undefined') {
                 const state = {
                     board: this.board,
@@ -437,18 +437,18 @@ class Game2048 {
                     history: this.history
                 };
                 localStorage.setItem('gameState', JSON.stringify(state));
-                console.log('Game saved successfully');
+                // console.log('Game saved successfully');
             }
-        } catch (e) {
-            console.error('Error saving game state:', e);
-        }
+        // } catch (e) {
+        //     console.error('Error saving game state:', e);
+        // }
     }
     
     loadGameState() {
-        try {
+        // try {
             if (typeof Storage !== 'undefined') {
                 const data = localStorage.getItem('gameState');
-                console.log('Loading game state:', data ? 'found' : 'not found');
+                // console.log('Loading game state:', data ? 'found' : 'not found');
                 
                 if (data) {
                     const state = JSON.parse(data);
@@ -459,16 +459,16 @@ class Game2048 {
                         this.score = state.score;
                         this.history = state.history || [];
                         this.updateDisplay();
-                        console.log('Game loaded successfully');
+                        // console.log('Game loaded successfully');
                         return;
                     }
                 }
             }
-        } catch (e) {
-            console.error('Error loading game state:', e);
-        }
+        // } catch (e) {
+        //     console.error('Error loading game state:', e);
+        // }
         
-        console.log('Starting new game');
+        // console.log('Starting new game');
         this.resetGame();
     }
     
