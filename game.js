@@ -21,7 +21,6 @@ class Game2048 {
         gameBoard.appendChild(cell);
     }
     
-    this.resetGame();
     }
 
     resetGame() {
