@@ -5,6 +5,8 @@ class Game2048 {
         this.score = 0;
         this.gameOver = false;
         this.history = [];
+        this.tileIdCounter = 0;
+        this.tileMap = Array(4).fill(null).map(() => Array(4).fill(null));
         
         this.init();
         this.setupEventListeners();
@@ -24,9 +26,11 @@ class Game2048 {
     
     resetGame() {
         this.board = Array(this.size).fill(null).map(() => Array(this.size).fill(0));
+        this.tileMap = Array(this.size).fill(null).map(() => Array(this.size).fill(null));
         this.score = 0;
         this.gameOver = false;
         this.history = [];
+        this.tileIdCounter = 0;
         
         const startTiles = Math.floor(Math.random() * 3) + 1;
         for (let i = 0; i < startTiles; i++) {
@@ -50,7 +54,7 @@ class Game2048 {
         if (emptyCells.length > 0) {
             const { row, col } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
             this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
-            this.newTilePosition = { row, col };
+            this.tileMap[row][col] = this.tileIdCounter++;
         }
     }
 
@@ -60,20 +64,18 @@ class Game2048 {
         
         const existingTiles = new Map();
         document.querySelectorAll('.tile').forEach(tile => {
-            const key = tile.dataset.id;
-            if (key) {
-                existingTiles.set(key, tile);
+            const tileId = parseInt(tile.dataset.tileId);
+            if (!isNaN(tileId)) {
+                existingTiles.set(tileId, tile);
             }
         });
-        
-        const mergedPositions = new Set();
         
         for (let row = 0; row < this.size; row++) {
             for (let col = 0; col < this.size; col++) {
                 const value = this.board[row][col];
-                const tileId = `${row}-${col}`;
+                const tileId = this.tileMap[row][col];
                 
-                if (value !== 0) {
+                if (value !== 0 && tileId !== null) {
                     const cellIndex = row * this.size + col;
                     const cell = cells[cellIndex];
                     const rect = cell.getBoundingClientRect();
@@ -84,16 +86,26 @@ class Game2048 {
                     
                     let tile = existingTiles.get(tileId);
                     
-                    if (!tile || parseInt(tile.textContent) !== value) {
-                        if (tile) {
-                            tile.remove();
-                            mergedPositions.add(tileId);
+                    if (tile) {
+                        tile.style.left = left + 'px';
+                        tile.style.top = top + 'px';
+                        
+                        const currentValue = parseInt(tile.textContent);
+                        if (currentValue !== value) {
+                            setTimeout(() => {
+                                tile.textContent = value;
+                                tile.className = 'tile tile-' + value;
+                                tile.classList.add('merged');
+                                setTimeout(() => tile.classList.remove('merged'), 300);
+                            }, 100);
                         }
                         
+                        existingTiles.delete(tileId);
+                    } else {
                         tile = document.createElement('div');
                         tile.classList.add('tile', `tile-${value}`);
                         tile.textContent = value;
-                        tile.dataset.id = tileId;
+                        tile.dataset.tileId = tileId;
                         tile.style.width = cell.offsetWidth + 'px';
                         tile.style.height = cell.offsetHeight + 'px';
                         tile.style.left = left + 'px';
@@ -104,18 +116,7 @@ class Game2048 {
                         setTimeout(() => {
                             tile.style.transform = 'scale(1)';
                             tile.style.opacity = '1';
-                            
-                            if (mergedPositions.has(tileId)) {
-                                tile.classList.add('merged');
-                                setTimeout(() => {
-                                    tile.classList.remove('merged');
-                                }, 300);
-                            }
                         }, 10);
-                    } else {
-                        tile.style.left = left + 'px';
-                        tile.style.top = top + 'px';
-                        existingTiles.delete(tileId);
                     }
                 }
             }
@@ -129,35 +130,43 @@ class Game2048 {
         
         document.getElementById('score').textContent = this.score;
     }
-
     
-    mergeLine(line) {
-        let newLine = line.filter(val => val !== 0);
-        let merged = [];
+    mergeLine(line, tileIds) {
+        let newLine = [];
+        let newIds = [];
+        
+        for (let i = 0; i < line.length; i++) {
+            if (line[i] !== 0) {
+                newLine.push(line[i]);
+                newIds.push(tileIds[i]);
+            }
+        }
         
         for (let i = 0; i < newLine.length - 1; i++) {
             if (newLine[i] === newLine[i + 1]) {
                 newLine[i] *= 2;
                 this.score += newLine[i];
-                merged.push(i);
                 newLine.splice(i + 1, 1);
+                newIds.splice(i + 1, 1);
             }
         }
         
         while (newLine.length < this.size) {
             newLine.push(0);
+            newIds.push(null);
         }
         
-        return newLine;
+        return { values: newLine, ids: newIds };
     }
     
     moveLeft() {
         let moved = false;
         for (let row = 0; row < this.size; row++) {
-            const newRow = this.mergeLine(this.board[row]);
-            if (JSON.stringify(newRow) !== JSON.stringify(this.board[row])) {
+            const result = this.mergeLine(this.board[row], this.tileMap[row]);
+            if (JSON.stringify(result.values) !== JSON.stringify(this.board[row])) {
                 moved = true;
-                this.board[row] = newRow;
+                this.board[row] = result.values;
+                this.tileMap[row] = result.ids;
             }
         }
         return moved;
@@ -166,11 +175,16 @@ class Game2048 {
     moveRight() {
         let moved = false;
         for (let row = 0; row < this.size; row++) {
-            const reversed = [...this.board[row]].reverse();
-            const newRow = this.mergeLine(reversed).reverse();
+            const reversedValues = [...this.board[row]].reverse();
+            const reversedIds = [...this.tileMap[row]].reverse();
+            const result = this.mergeLine(reversedValues, reversedIds);
+            const newRow = result.values.reverse();
+            const newIds = result.ids.reverse();
+            
             if (JSON.stringify(newRow) !== JSON.stringify(this.board[row])) {
                 moved = true;
                 this.board[row] = newRow;
+                this.tileMap[row] = newIds;
             }
         }
         return moved;
@@ -180,11 +194,14 @@ class Game2048 {
         let moved = false;
         for (let col = 0; col < this.size; col++) {
             const column = this.board.map(row => row[col]);
-            const newColumn = this.mergeLine(column);
-            if (JSON.stringify(newColumn) !== JSON.stringify(column)) {
+            const columnIds = this.tileMap.map(row => row[col]);
+            const result = this.mergeLine(column, columnIds);
+            
+            if (JSON.stringify(result.values) !== JSON.stringify(column)) {
                 moved = true;
                 for (let row = 0; row < this.size; row++) {
-                    this.board[row][col] = newColumn[row];
+                    this.board[row][col] = result.values[row];
+                    this.tileMap[row][col] = result.ids[row];
                 }
             }
         }
@@ -195,12 +212,18 @@ class Game2048 {
         let moved = false;
         for (let col = 0; col < this.size; col++) {
             const column = this.board.map(row => row[col]);
-            const reversed = [...column].reverse();
-            const newColumn = this.mergeLine(reversed).reverse();
+            const columnIds = this.tileMap.map(row => row[col]);
+            const reversedValues = [...column].reverse();
+            const reversedIds = [...columnIds].reverse();
+            const result = this.mergeLine(reversedValues, reversedIds);
+            const newColumn = result.values.reverse();
+            const newIds = result.ids.reverse();
+            
             if (JSON.stringify(newColumn) !== JSON.stringify(column)) {
                 moved = true;
                 for (let row = 0; row < this.size; row++) {
                     this.board[row][col] = newColumn[row];
+                    this.tileMap[row][col] = newIds[row];
                 }
             }
         }
@@ -209,6 +232,7 @@ class Game2048 {
     
     move(direction) {
         const prevBoard = JSON.parse(JSON.stringify(this.board));
+        const prevTileMap = JSON.parse(JSON.stringify(this.tileMap));
         const prevScore = this.score;
         let moved = false;
         
@@ -225,6 +249,7 @@ class Game2048 {
         if (moved) {
             this.history.push({
                 board: prevBoard,
+                tileMap: prevTileMap,
                 score: prevScore
             });
             
@@ -232,18 +257,21 @@ class Game2048 {
                 this.history.shift();
             }
             
-            const tilesToAdd = Math.random() < 0.5 ? 1 : 2;
-            for (let i = 0; i < tilesToAdd; i++) {
-                this.addRandomTile();
-            }
-            
             this.updateDisplay();
-            this.saveGameState();
             
-            if (this.isGameOver()) {
-                this.gameOver = true;
-                this.showGameOver();
-            }
+            setTimeout(() => {
+                const tilesToAdd = Math.random() < 0.5 ? 1 : 2;
+                for (let i = 0; i < tilesToAdd; i++) {
+                    this.addRandomTile();
+                }
+                this.updateDisplay();
+                this.saveGameState();
+                
+                if (this.isGameOver()) {
+                    this.gameOver = true;
+                    this.showGameOver();
+                }
+            }, 200);
         }
     }
     
@@ -334,6 +362,7 @@ class Game2048 {
         if (this.history.length > 0 && !this.gameOver) {
             const prevState = this.history.pop();
             this.board = prevState.board;
+            this.tileMap = prevState.tileMap;
             this.score = prevState.score;
             this.updateDisplay();
             this.saveGameState();
@@ -439,6 +468,8 @@ class Game2048 {
         if (typeof Storage !== 'undefined') {
             const state = {
                 board: this.board,
+                tileMap: this.tileMap,
+                tileIdCounter: this.tileIdCounter,
                 score: this.score,
                 history: this.history
             };
@@ -456,6 +487,8 @@ class Game2048 {
                 if (state.board && Array.isArray(state.board) && 
                     typeof state.score === 'number') {
                     this.board = state.board;
+                    this.tileMap = state.tileMap || Array(4).fill(null).map(() => Array(4).fill(null));
+                    this.tileIdCounter = state.tileIdCounter || 0;
                     this.score = state.score;
                     this.history = state.history || [];
                     this.updateDisplay();
